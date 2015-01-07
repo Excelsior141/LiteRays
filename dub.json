@@ -1,0 +1,10 @@
+{
+	"name": "LiteRays",
+	"description": "A minimal D renderer.",
+	"copyright": "Copyright © 2015, Excelsior",
+	"authors": ["Excelsior"],
+	"dependencies": {
+		"derelict-sdl2": ">=1.2.10",
+		"derelict-util": ">=1.0.3"
+	}
+}
