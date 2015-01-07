@@ -1,0 +1,2 @@
+# LiteRays
+A progressive renderer
