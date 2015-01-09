@@ -3,6 +3,8 @@ import std.math;
 import std.conv;
 import std.traits;
 
+enum Refl_t { DIFF, SPEC, REFR };
+
 struct Vec {      
  	float x = 0;
     float y = 0;
@@ -97,8 +99,6 @@ struct Ray {
 	}
 }
 
-enum Refl_t { DIFF, SPEC, REFR };
-
 struct Sphere {
 	float rad;      
 	Vec p = Vec();
@@ -123,5 +123,51 @@ struct Sphere {
             det=sqrt(det);
         }
 	    return (t=b-det)>eps ? t : ((t=b+det)>eps ? t : 0);
+	}
+}
+
+struct Polygon {
+
+	Vec vertices[3] = [Vec(), Vec(), Vec()];
+    Vec e = Vec();
+    Vec c = Vec();     
+	Refl_t refl;
+
+	this(Vec vertices[3], Vec e, Vec c, Refl_t refl) {
+		this.vertices = vertices;
+		this.e = e;
+		this.c = c;
+		this.refl = refl;
+	}
+
+	bool intersect(Ray r, Vec v[3], out float distance)
+	{
+	    auto edge1 = v[1] - v[0];
+	    auto edge2 = v[2] - v[0];
+
+	    auto dc = r.o % edge2;
+	    auto d = edge1.dot(dc);
+
+	    if (d < float.epsilon && d > -float.epsilon)
+	        return false;
+
+	    auto vec = r.o - v[0];
+	    auto uvU = vec.dot(dc) / d;
+
+	    if (uvU < 0 || uvU > 1)
+	        return false;
+
+	    dc = vec % edge1;
+	    auto uvV = r.d.dot(dc) / d;
+
+	    if (uvV < 0 || uvU + uvV > 1)
+	        return false;
+
+	    distance = edge2.dot(dc) / d;
+
+	    if (distance < 0)
+	        return false;
+
+	    return true;
 	}
 }
